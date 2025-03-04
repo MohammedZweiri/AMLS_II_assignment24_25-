@@ -11,7 +11,7 @@ from tensorflow import keras
 from keras.utils import to_categorical, plot_model
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense
+from keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense, RandomFlip, RandomRotation, RandomZoom
 from keras.optimizers import Adam
 from keras import Input
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
@@ -19,7 +19,7 @@ from sklearn.utils import class_weight
 from src import utils
 
 
-def preprocess_check(train_dataset, validation_dataset, test_dataset):
+def image_augmentation(train_dataset):
     """Pre-process check.
 
     This function checks if the datasets has no missing images.
@@ -32,23 +32,19 @@ def preprocess_check(train_dataset, validation_dataset, test_dataset):
 
     """
 
-    if len(train_dataset.imgs) != 11959:
-        print("Missing images detected in the training dataset")
-        print(f"Found {len(train_dataset.imgs)}, should be 11959.")
-    else:
-        print("SUCCESS: No missing images in training dataset.")
+    # Convert numpy array to a Tensor
+    x_train_tensor = tf.convert_to_tensor(train_dataset)
 
-    if len(validation_dataset.imgs) != 1712:
-        print("Missing images detected in the validation dataset")
-        print(f"Found {len(validation_dataset.imgs)}, should be 1712.")
-    else:
-        print("SUCCESS: No missing images in validation dataset.")
+    # Apply augmentation
+    data_augmentation = Sequential([
 
-    if len(test_dataset.imgs) != 3421:
-        print("Missing images detected in the test dataset")
-        print(f"Found {len(test_dataset.imgs)}, should be 3421.")
-    else:
-        print("SUCCESS: No missing images in test dataset.")
+        RandomFlip("horizontal"),
+        RandomRotation(0.2),
+        RandomZoom(0.2),
+    ])
+
+    augmented_train_dataset = data_augmentation(x_train_tensor, training=True)
+    return augmented_train_dataset
 
 
 

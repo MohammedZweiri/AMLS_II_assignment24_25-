@@ -4,6 +4,7 @@
 """
 
 from src import utils
+from model import efficientNet
 import argparse
 import numpy as np
 
@@ -21,10 +22,13 @@ def task(image_path):
     x_train, y_train, x_val, y_val, x_test, y_test = utils.load_dataset(image_path)
 
     # Transform data using normalization
-    normalised_train, normalised_val, normalised_test = utils.normalize_dataset(x_train, x_val, x_test)
+    #normalised_train, normalised_val, normalised_test = utils.normalize_dataset(x_train, x_val, x_test)
 
     # visualise a subset of the dataset
-    utils.visualise_subset(normalised_train, y_train)
+    utils.visualise_subset(x_train, y_train)
+
+    # Perform image augmentation
+    efficientNet.image_augmentation(x_train)
 
     # # Run the CNN model
 
