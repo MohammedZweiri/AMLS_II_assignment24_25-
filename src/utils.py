@@ -11,8 +11,9 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import os
 import cv2
+from model import efficientNet 
 
-
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 def create_directory(directory):
     """Create directory under the current path
@@ -54,7 +55,7 @@ def load_dataset(image_path):
     """
     try:
 
-        TARGET_SIZE = 224
+        TARGET_SIZE = 64
 
         train = pd.read_csv(image_path+'/train.csv')
 
@@ -119,7 +120,7 @@ def normalize_dataset(train_dataset, validation_dataset, test_dataset):
 
 
 
-def save_model(task_name,model, model_name):
+def save_model(model, model_name):
     """Save CNN model.
 
     This function saves CNN model and weights as json and .h5 files respectively.
@@ -137,14 +138,14 @@ def save_model(task_name,model, model_name):
         model_structure = model.to_json()
 
         # Creates a json file and writes the json model structure
-        file_path = Path(f"{task_name}/model/{model_name}.json")
+        file_path = Path(f"./model/{model_name}.json")
         file_path.write_text(model_structure)
 
         # Saves the weights as .h5 file
-        model.save_weights(f"{task_name}/model/{model_name}.weights.h5")
+        model.save_weights(f"./model/{model_name}.weights.h5")
 
     except Exception as e:
-        print(f"Saving the CNN model failed. Error: {e}")
+        print(f"Saving the EfficientNet model failed. Error: {e}")
 
 
 
@@ -180,7 +181,7 @@ def load_model(task_name, model_name):
 
 
 
-def plot_accuray_loss(task_name, model_history):
+def plot_accuray_loss(model_history):
     """Plot accuracy loss graphs for the CNN model.
 
     This function plots the CNN model's accuracy and loss against epoch into a fig file.
@@ -219,7 +220,7 @@ def plot_accuray_loss(task_name, model_history):
         ax2.grid()
 
         # Save the subplots file.
-        fig.savefig(f'{task_name}/figures/CNN_accuracy_loss.png')
+        fig.savefig(f'./figures/Efficient_accuracy_loss_1.png')
     
     except Exception as e:
         print(f"Plotting accuracy and loss has failed. Error: {e}")
@@ -242,8 +243,7 @@ def visualise_subset(train_dataset, labels):
 
         plt.figure(figsize=(12,10))
         for x in range(6):
-            value = 330+1+x
-            plt.subplot(value)
+            plt.subplot(2, 3, x+1)
             plt.imshow(train_dataset[x], cmap=plt.get_cmap('gray'))
             plt.title(f"Class {labels[x]}")
 
@@ -252,3 +252,30 @@ def visualise_subset(train_dataset, labels):
 
     except Exception as e:
         print(f"Visualising subset failed. Error: {e}")
+
+
+def visualise_augmentation(augmented_data):
+    """Visualise Subset.
+
+    This function visualises a subset of the training dataset images data.
+
+    Args:
+            training datasets.
+
+    Returns:
+            Images saved in figures folder.
+
+    """
+
+    try:
+
+        plt.figure(figsize=(12,10))
+        for x in range(6):
+            plt.subplot(2, 3, x+1)
+            plt.imshow(augmented_data[x].numpy(), cmap=plt.get_cmap('gray'))
+
+        plt.savefig("./figures/augmented_images.jpeg")
+        plt.close()
+
+    except Exception as e:
+        print(f"Visualising augmented subset failed. Error: {e}")
