@@ -10,14 +10,17 @@ import numpy as np
 from tensorflow import keras
 from keras.utils import to_categorical, plot_model
 import tensorflow as tf
-from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense, RandomFlip, RandomRotation, RandomZoom
+from keras.models import Sequential, Model
+from keras.layers import GlobalAveragePooling2D, Dropout, Dense, RandomFlip, RandomRotation, RandomZoom
 from keras.optimizers import Adam
+from keras.applications import EfficientNetB0
 from keras import Input
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 from sklearn.utils import class_weight
 from src import utils
+import os
 
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 def image_augmentation(train_dataset):
     """Pre-process check.
@@ -41,6 +44,7 @@ def image_augmentation(train_dataset):
         RandomFlip("horizontal"),
         RandomRotation(0.2),
         RandomZoom(0.2),
+
     ])
 
     augmented_train_dataset = data_augmentation(x_train_tensor, training=True)
@@ -49,9 +53,9 @@ def image_augmentation(train_dataset):
 
 
 def evaluate_model(true_labels, predicted_labels, predict_probs, label_names):
-    """Evaluate the CNN model.
+    """Evaluate the EfficientNet model.
 
-    This function evaluates the CNN model and produces classification report and confusion matrix
+    This function evaluates the EfficientNet model and produces classification report and confusion matrix
 
     Args:
             true_labels
@@ -84,14 +88,14 @@ def evaluate_model(true_labels, predicted_labels, predict_probs, label_names):
         matrix = confusion_matrix(true_labels, predicted_labels)
         plt.figure(figsize=(10, 7), dpi=200)
         ConfusionMatrixDisplay(matrix, display_labels=label_names).plot(cmap=plt.cm.Blues, xticks_rotation='vertical')
-        plt.title("Confusion Matrix for CNN")
-        plt.savefig('B/figures/Confusion_Matrix_CNN.png', bbox_inches = 'tight')
+        plt.title("Confusion Matrix for EfficientNet")
+        plt.savefig('/figures/Confusion_Matrix_EfficientNet.png', bbox_inches = 'tight')
 
     except Exception as e:
-        print(f"Evaluating the model has failed. Error: {e}")
+        print(f"Evaluating the EfficientNet model has failed. Error: {e}")
 
 
-def class_imbalance_handling(train_dataset):
+def class_imbalance_handling(train_labels):
     """Handling class imbalance
 
     This function performs classes weights, which is useful for the model to "pay more attention" to samples from an under-represented class.
@@ -108,19 +112,18 @@ def class_imbalance_handling(train_dataset):
     try:
 
         # Computing class weights
-        blood_class_weights = class_weight.compute_class_weight('balanced',
-                                                            classes = np.unique(train_dataset.labels[:,0]),
-                                                            y = train_dataset.labels[:, 0])
+        train_labels = np.array(train_labels)
+        disease_class_weights = class_weight.compute_class_weight('balanced',
+                                                            classes = np.unique(train_labels),
+                                                            y = train_labels)
 
         # Link each weight to it's corresponding class.
-        weights = {0 : blood_class_weights[0], 
-                1 : blood_class_weights[1], 
-                2 : blood_class_weights[2], 
-                3 : blood_class_weights[3], 
-                4 : blood_class_weights[4], 
-                5 : blood_class_weights[5], 
-                6 : blood_class_weights[6], 
-                7 : blood_class_weights[7] }
+        weights = {0 : disease_class_weights[0], 
+                1 : disease_class_weights[1], 
+                2 : disease_class_weights[2], 
+                3 : disease_class_weights[3], 
+                4 : disease_class_weights[4]
+                }
 
         print(f"Class weights for imbalance {weights}")
         return weights
@@ -128,92 +131,81 @@ def class_imbalance_handling(train_dataset):
     except Exception as e:
         print(f"Class imbalance handling has failed. Error: {e}")
 
-def CNN_model_training(train_dataset, validation_dataset, test_dataset):
+def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_labels):
     """CNN model training
 
     This function trains the CNN model and tests it on the dataset. Then, it will evaluate it and produce the accuracy and plot loss.
 
     Args:
-            training, validation and test datasets.
+            training and validation datasets.
     
 
     """
 
     try:
-            
-        # Class labels
-        class_labels = ['basophil',
-                'eosinophil',
-                'erythroblast',
-                'immature granulocytes',
-                'lymphocyte',
-                'monocyte',
-                'neutrophil',
-                'platelet']
         
 
-        # Categorise the labels into 8 classes
-        train_labels = to_categorical(train_dataset.labels, num_classes=8)
-        val_labels = to_categorical(validation_dataset.labels, num_classes=8)
+        # Categorise the labels into 5 classes
+        train_labels_categorical = to_categorical(train_labels, num_classes=5)
+        val_labels_categorical = to_categorical(val_labels, num_classes=5)
 
         # CNN model
-        model = Sequential()
-        model.add(Input(shape=(28,28,3)))
-        model.add(Conv2D(32, (3,3), padding='same', activation="relu"))
-        model.add(Conv2D(32, (3,3), activation="relu"))
-        model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Dropout(0.3))
+        base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(64,64,3))
+        model = base_model.output
+        model = GlobalAveragePooling2D()(model)
+        #model = Dropout()
+        model = Dense(256, activation="relu")(model)
+        model = Dropout(0.5)(model)
+        output_layer = Dense(5, activation="softmax")(model)
 
-        model.add(Conv2D(64, (3,3), padding='same', activation="relu"))
-        model.add(Conv2D(64, (3,3), activation="relu"))
-        model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Dropout(0.3))
-
-        model.add(Flatten())
-        model.add(Dense(512, activation="relu"))
-        model.add(Dropout(0.5))
-        model.add(Dense(8, activation="softmax"))
+        model = Model(inputs=base_model.input, outputs=output_layer)
 
         # Output the model summary
         print(model.summary())
 
+
+        gpus = tf.config.list_physical_devices('GPU')
+
+        if gpus:
+                print("✅ GPU is available:", gpus)
+        else:
+                print("❌ No GPU found. TensorFlow is running on CPU.")
+
+        print(tf.config.experimental.list_physical_devices('GPU'))
+
         # Plot the CNN model
         plot_model(model, 
-                to_file='B/figures/CNN_Model_testB_add.png', 
+                to_file='./figures/EfficientNet_Model_test_1.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
         # Compile the CNN model
         model.compile(loss='categorical_crossentropy',
-                optimizer=Adam(learning_rate=0.001),
+                optimizer=Adam(),
                 metrics=['accuracy'])
         
         # Handle the class imbalance.
-        weights = class_imbalance_handling(train_dataset)
+        weights = class_imbalance_handling(train_labels)
 
         # Fit the CNN model
-        history = model.fit(train_dataset.imgs, train_labels, 
-                epochs=40,
-                callbacks=[tf.keras.callbacks.EarlyStopping(patience=10)],
-                validation_data=(validation_dataset.imgs, val_labels),
+        history = model.fit(train_dataset, train_labels_categorical, 
+                epochs=20,
+                callbacks=[tf.keras.callbacks.EarlyStopping(patience=5)],
+                validation_data=(val_dataset, val_labels_categorical),
                 batch_size=32,
                 shuffle=True,
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model("B",model, "CNN_model_taskB_final_add")
+        utils.save_model(model, "EfficientNet_Model_test_add_1")
 
-        # Evaluate the model
-        test_dataset_prob = model.predict(test_dataset.imgs, verbose=0)
-        test_predict_labels = np.argmax(test_dataset_prob, axis=-1)
-        evaluate_model(test_dataset.labels, test_predict_labels, test_dataset_prob, class_labels)
-        utils.plot_accuray_loss("B",history)
+        utils.plot_accuray_loss(history)
 
     except Exception as e:
-        print(f"Training and saving the CNN model failed. Error: {e}")
+        print(f"Training and saving the EfficientNet model failed. Error: {e}")
 
 
-def CNN_model_testing(test_dataset):
+def EfficientNet_model_testing(test_dataset):
     """CNN model testing
 
     This function loads the final CNN model and tests it on the test dataset. Then, it will evaluate it and produce the accuracy and plot loss.
@@ -245,4 +237,4 @@ def CNN_model_testing(test_dataset):
         evaluate_model(test_dataset.labels, test_predict_labels, test_dataset_prob, class_labels)
 
     except Exception as e:
-        print(f"Loading and testing the CNN model failed. Error: {e}")
+        print(f"Loading and testing the EfficientNet model failed. Error: {e}")
