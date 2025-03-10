@@ -7,7 +7,10 @@ from src import utils
 from model import efficientNet
 import argparse
 import numpy as np
+import os
 
+
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 def task(image_path):
     """ Runs the CNN model for bloodMNIST dataset
@@ -15,10 +18,12 @@ def task(image_path):
 
     """
 
-    print("################ Task B via CNN is starting ################")
+    print("################ Cassava leaf disease classification task is starting ################")
     print('\n')
 
+
     # Download the dataset
+    print('Loading the dataset..')
     x_train, y_train, x_val, y_val, x_test, y_test = utils.load_dataset(image_path)
 
     # Transform data using normalization
@@ -27,13 +32,19 @@ def task(image_path):
     # visualise a subset of the dataset
     utils.visualise_subset(x_train, y_train)
 
+
     # Perform image augmentation
-    efficientNet.image_augmentation(x_train)
+    print('Performing image augmentation..')
+    augmented_data = efficientNet.image_augmentation(x_train)
+
+    # visualise a subset of the dataset
+    utils.visualise_augmentation(augmented_data)
 
     # # Run the CNN model
 
     # if decision == 'train':
-    #     CNN_B.CNN_model_training(train_dataset, validation_dataset, test_dataset)
+    print('Performing model training..')
+    efficientNet.EfficientNet_model_training(augmented_data, y_train, x_val, y_val)
         
     # elif decision == 'test':
     #     CNN_B.CNN_model_testing(test_dataset)
