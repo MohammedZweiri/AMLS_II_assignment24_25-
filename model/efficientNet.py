@@ -150,7 +150,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         val_labels_categorical = to_categorical(val_labels, num_classes=5)
 
         # CNN model
-        base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(64,64,3))
+        base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(224,224,3))
         model = base_model.output
         model = GlobalAveragePooling2D()(model)
         #model = Dropout()
