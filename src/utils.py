@@ -55,7 +55,7 @@ def load_dataset(image_path):
     """
     try:
 
-        TARGET_SIZE = 224
+        TARGET_SIZE = 96
 
         train = pd.read_csv(image_path+'/train.csv')
 
