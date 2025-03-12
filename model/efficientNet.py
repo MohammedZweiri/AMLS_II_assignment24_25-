@@ -150,7 +150,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         val_labels_categorical = to_categorical(val_labels, num_classes=5)
 
         # CNN model
-        base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(96,96,3))
+        base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(224,224,3))
         model = base_model.output
         model = GlobalAveragePooling2D()(model)
         model = Dropout(0.2)(model)
@@ -175,7 +175,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_5.png', 
+                to_file='./figures/EfficientNet_Model_test_6.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -197,7 +197,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_5")
+        utils.save_model(model, "EfficientNet_Model_test_add_6")
 
         utils.plot_accuray_loss(history)
 
