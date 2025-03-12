@@ -175,7 +175,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_3.png', 
+                to_file='./figures/EfficientNet_Model_test_4.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -189,15 +189,15 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Fit the CNN model
         history = model.fit(train_dataset, train_labels_categorical, 
-                epochs=20,
+                epochs=30,
                 callbacks=[tf.keras.callbacks.EarlyStopping(patience=5)],
                 validation_data=(val_dataset, val_labels_categorical),
-                batch_size=32,
+                batch_size=64,
                 shuffle=True,
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_3")
+        utils.save_model(model, "EfficientNet_Model_test_add_4")
 
         utils.plot_accuray_loss(history)
 
