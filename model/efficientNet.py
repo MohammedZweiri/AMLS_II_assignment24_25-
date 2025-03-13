@@ -22,7 +22,7 @@ import os
 
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
-def image_augmentation(train_dataset):
+def image_augmentation():
     """Pre-process check.
 
     This function checks if the datasets has no missing images.
@@ -36,7 +36,7 @@ def image_augmentation(train_dataset):
     """
 
     # Convert numpy array to a Tensor
-    x_train_tensor = tf.convert_to_tensor(train_dataset)
+#     x_train_tensor = tf.convert_to_tensor(train_dataset)
 
     # Apply augmentation
     data_augmentation = Sequential([
@@ -47,8 +47,8 @@ def image_augmentation(train_dataset):
 
     ])
 
-    augmented_train_dataset = data_augmentation(x_train_tensor, training=True)
-    return augmented_train_dataset
+#     augmented_train_dataset = data_augmentation(x_train_tensor, training=True)
+    return data_augmentation
 
 
 
@@ -152,6 +152,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         # CNN model
         base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(128,128,3))
         model = base_model.output
+        model = image_augmentation()(model)
         model = GlobalAveragePooling2D()(model)
         model = Dropout(0.2)(model)
         model = Dense(256, activation="relu")(model)
@@ -175,7 +176,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_6.png', 
+                to_file='./figures/EfficientNet_Model_test_7.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -197,7 +198,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_6")
+        utils.save_model(model, "EfficientNet_Model_test_add_7")
 
         utils.plot_accuray_loss(history)
 
