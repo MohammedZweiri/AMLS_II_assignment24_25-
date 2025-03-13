@@ -219,8 +219,8 @@ def plot_accuray_loss(model_history):
         ax2.legend()
         ax2.grid()
 
-        # Save the subplots file.
-        fig.savefig(f'./figures/Efficient_accuracy_loss_8.png')
+        # Save the subplots file.`125   q`
+        fig.savefig(f'./figures/Efficient_accuracy_loss_9.png')
     
     except Exception as e:
         print(f"Plotting accuracy and loss has failed. Error: {e}")
