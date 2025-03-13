@@ -34,17 +34,17 @@ def task(image_path):
 
 
     # Perform image augmentation
-    print('Performing image augmentation..')
-    augmented_data = efficientNet.image_augmentation(x_train)
+    # print('Performing image augmentation..')
+    # augmented_data = efficientNet.image_augmentation(x_train)
 
     # visualise a subset of the dataset
-    utils.visualise_augmentation(augmented_data)
+    #utils.visualise_augmentation(augmented_data)
 
     # # Run the CNN model
 
     # if decision == 'train':
     print('Performing model training..')
-    efficientNet.EfficientNet_model_training(augmented_data, y_train, x_val, y_val)
+    efficientNet.EfficientNet_model_training(x_train, y_train, x_val, y_val)
         
     # elif decision == 'test':
     #     CNN_B.CNN_model_testing(test_dataset)
