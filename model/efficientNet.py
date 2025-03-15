@@ -11,7 +11,7 @@ from tensorflow import keras
 from keras.utils import to_categorical, plot_model
 import tensorflow as tf
 from keras.models import Sequential, Model
-from keras.layers import GlobalAveragePooling2D, Dropout, Dense, RandomFlip, RandomRotation, RandomZoom, Flatten
+from keras.layers import GlobalAveragePooling2D, Dropout, Dense, RandomFlip, RandomRotation, RandomZoom, Flatten, BatchNormalization
 from keras.optimizers import Adam
 from keras.applications import EfficientNetB0
 from keras import Input
@@ -169,10 +169,18 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         #model.add(Dropout(0.25))
         model.add(Flatten())
         model.add(Dense(1024,activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Dropout(0.3))
         model.add(Dense(512, activation="relu"))
+        model.add(BatchNormalization())
+        model.add(Dropout(0.3))
         model.add(Dense(256,activation='relu'))
+        model.add(BatchNormalization())
+        model.add(Dropout(0.3))
         model.add(Dense(128, activation="relu"))
-        model.add(Dropout(0.5))
+        model.add(BatchNormalization())
+        model.add(Dropout(0.3))
+        #model.add(Dropout(0.5))
         model.add(Dense(5, activation="softmax"))
         # Output the model summary
         print(model.summary())
@@ -194,7 +202,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 show_layer_activations=True)
 
         # Compile the CNN model
-        model.compile(loss='sparse_categorical_crossentropy',
+        model.compile(loss='categorical_crossentropy',
                 optimizer=Adam(0.0005),
                 metrics=['accuracy'])
         
