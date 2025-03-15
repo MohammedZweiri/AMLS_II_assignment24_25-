@@ -13,7 +13,7 @@ import tensorflow as tf
 from keras.models import Sequential, Model
 from keras.layers import GlobalAveragePooling2D, Dropout, Dense, RandomFlip, RandomRotation, RandomZoom, Flatten, BatchNormalization
 from keras.optimizers import Adam
-from keras.applications import EfficientNetB0
+from keras.applications import EfficientNetB0, EfficientNetB3
 from keras import Input
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 from sklearn.utils import class_weight
@@ -163,23 +163,23 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         # model = Model(inputs=base_model.input, outputs=output_layer)
 
         model = Sequential()
-        model.add(EfficientNetB0(weights="imagenet", include_top=False, input_shape=(128,128,3)))
+        model.add(EfficientNetB3(weights="imagenet", include_top=False, input_shape=(128,128,3)))
         model.add(image_augmentation())
         model.add(GlobalAveragePooling2D())
         #model.add(Dropout(0.25))
         model.add(Flatten())
         model.add(Dense(1024,activation='relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.25))
+        model.add(Dropout(0.3))
         model.add(Dense(512, activation="relu"))
         model.add(BatchNormalization())
-        model.add(Dropout(0.25))
+        model.add(Dropout(0.3))
         model.add(Dense(256,activation='relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.25))
+        model.add(Dropout(0.3))
         model.add(Dense(128, activation="relu"))
         model.add(BatchNormalization())
-        model.add(Dropout(0.5))
+        model.add(Dropout(0.3))
         #model.add(Dropout(0.5))
         model.add(Dense(5, activation="softmax"))
         # Output the model summary
@@ -197,7 +197,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_14.png', 
+                to_file='./figures/EfficientNet_Model_test_16.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -212,14 +212,14 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         # Fit the CNN model
         history = model.fit(train_dataset, train_labels_categorical, 
                 epochs=20,
-                callbacks=[tf.keras.callbacks.EarlyStopping(patience=5)],
+                callbacks=[tf.keras.callbacks.EarlyStopping(patience=8)],
                 validation_data=(val_dataset, val_labels_categorical),
                 batch_size=32,
                 shuffle=True,
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_14")
+        utils.save_model(model, "EfficientNet_Model_test_add_16")
 
         utils.plot_accuray_loss(history)
 
