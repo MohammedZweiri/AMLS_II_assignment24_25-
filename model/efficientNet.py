@@ -182,7 +182,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Compile the CNN model
         model.compile(loss='categorical_crossentropy',
-                optimizer=Adam(0.001),
+                optimizer=Adam(0.0005),
                 metrics=['accuracy'])
         
         # Handle the class imbalance.
@@ -198,7 +198,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_9")
+        utils.save_model(model, "EfficientNet_Model_test_add_10")
 
         utils.plot_accuray_loss(history)
 
@@ -227,7 +227,7 @@ def EfficientNet_model_testing(test_dataset):
                 "Healthy"]
 
         # Load the CNN model
-        model = utils.load_model("B","CNN_model_taskB_final")
+        model = utils.load_model("CNN_model_taskB_final")
 
         # Output the model summary
         print(model.summary())
