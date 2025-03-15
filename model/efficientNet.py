@@ -150,17 +150,27 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         val_labels_categorical = to_categorical(val_labels, num_classes=5)
 
         # CNN model
-        base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(128,128,3))
-        model = base_model.output
-        model = image_augmentation()(model)
-        model = GlobalAveragePooling2D()(model)
-        model = Dropout(0.25)(model)
-        model = Dense(128, activation="relu")(model)
-        model = Dropout(0.5)(model)
-        output_layer = Dense(5, activation="softmax")(model)
 
-        model = Model(inputs=base_model.input, outputs=output_layer)
+        #base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(128,128,3))
+        #model = base_model.output
+        # model = image_augmentation()(model)
+        # model = GlobalAveragePooling2D()(model)
+        # model = Dropout(0.25)(model)
+        # model = Dense(128, activation="relu")(model)
+        # model = Dropout(0.5)(model)
+        # output_layer = Dense(5, activation="softmax")(model)
 
+        # model = Model(inputs=base_model.input, outputs=output_layer)
+
+        model = Sequential()
+        model.add(image_augmentation())
+        model.add(EfficientNetB0(weights="imagenet", include_top=False, input_shape=(128,128,3)))
+        model.add(GlobalAveragePooling2D())
+        model.add(Dropout(0.25))
+        #model.add(Flatten())
+        model.add(Dense(512, activation="relu"))
+        model.add(Dropout(0.5))
+        model.add(Dense(5, activation="softmax"))
         # Output the model summary
         print(model.summary())
 
@@ -190,7 +200,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Fit the CNN model
         history = model.fit(train_dataset, train_labels_categorical, 
-                epochs=30,
+                epochs=20,
                 callbacks=[tf.keras.callbacks.EarlyStopping(patience=5)],
                 validation_data=(val_dataset, val_labels_categorical),
                 batch_size=64,
@@ -198,7 +208,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_10")
+        utils.save_model(model, "EfficientNet_Model_test_add_11")
 
         utils.plot_accuray_loss(history)
 
