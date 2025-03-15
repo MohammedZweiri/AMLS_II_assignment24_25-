@@ -11,7 +11,7 @@ from tensorflow import keras
 from keras.utils import to_categorical, plot_model
 import tensorflow as tf
 from keras.models import Sequential, Model
-from keras.layers import GlobalAveragePooling2D, Dropout, Dense, RandomFlip, RandomRotation, RandomZoom
+from keras.layers import GlobalAveragePooling2D, Dropout, Dense, RandomFlip, RandomRotation, RandomZoom, Flatten
 from keras.optimizers import Adam
 from keras.applications import EfficientNetB0
 from keras import Input
@@ -167,7 +167,8 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(image_augmentation())
         model.add(GlobalAveragePooling2D())
         #model.add(Dropout(0.25))
-        #model.add(Flatten())
+        model.add(Flatten())
+        model.add(Dense(1024,activation='relu'))
         model.add(Dense(512, activation="relu"))
         model.add(Dropout(0.5))
         model.add(Dense(5, activation="softmax"))
@@ -186,7 +187,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_9.png', 
+                to_file='./figures/EfficientNet_Model_test_13.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -208,7 +209,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_12")
+        utils.save_model(model, "EfficientNet_Model_test_add_13")
 
         utils.plot_accuray_loss(history)
 
