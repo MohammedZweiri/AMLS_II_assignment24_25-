@@ -203,9 +203,9 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 show_layer_activations=True)
 
         # Compile the CNN model
-        lr_schedule = ExponentialDecay(5e-3, decay_steps=10000, decay_rate=0.9)
+        #lr_schedule = ExponentialDecay(5e-3, decay_steps=10000, decay_rate=0.9)
         model.compile(loss='categorical_crossentropy',
-                optimizer=Adam(lr_schedule),
+                optimizer=Adam(0.0001),
                 metrics=['accuracy'])
         
         # Handle the class imbalance.
@@ -213,7 +213,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Fit the CNN model
         history = model.fit(train_dataset, train_labels_categorical, 
-                epochs=20,
+                epochs=30,
                 callbacks=[tf.keras.callbacks.EarlyStopping(patience=8)],
                 validation_data=(val_dataset, val_labels_categorical),
                 batch_size=32,
