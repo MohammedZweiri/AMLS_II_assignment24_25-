@@ -55,7 +55,7 @@ def load_dataset(image_path):
     """
     try:
 
-        TARGET_SIZE = 128
+        TARGET_SIZE = 224
 
         train = pd.read_csv(image_path+'/train.csv')
 
@@ -82,9 +82,9 @@ def load_dataset(image_path):
         
         print("Dataset split checkpoint")
 
-        print(f"Train size: {len(x_train)}")
-        print(f"Validation size: {len(x_val)}")
-        print(f"Test size: {len(x_test)}")
+        print(f"Training shape: {str(x_train.shape)}")
+        print(f"Validation shape: {str(x_val.shape)}")
+        print(f"Testing shape: {str(x_test.shape)}")
 
         return x_train, y_train, x_val, y_val, x_test, y_test
 
