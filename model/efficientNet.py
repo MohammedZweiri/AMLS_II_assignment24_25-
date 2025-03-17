@@ -164,7 +164,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         # model = Model(inputs=base_model.input, outputs=output_layer)
 
         model = Sequential()
-        model.add(EfficientNetB3(weights="imagenet", include_top=False, input_shape=(224,224,3)))
+        model.add(EfficientNetB3(weights="imagenet", include_top=False, input_shape=(300,300,3)))
         model.add(image_augmentation())
         model.add(GlobalAveragePooling2D())
         #model.add(Dropout(0.25))
@@ -198,7 +198,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_18.png', 
+                to_file='./figures/EfficientNet_Model_test_21.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -221,7 +221,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_18")
+        utils.save_model(model, "EfficientNet_Model_test_add_21")
 
         utils.plot_accuray_loss(history)
 

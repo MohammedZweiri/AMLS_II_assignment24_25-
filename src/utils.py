@@ -55,7 +55,7 @@ def load_dataset(image_path):
     """
     try:
 
-        TARGET_SIZE = 224
+        TARGET_SIZE = 300
 
         train = pd.read_csv(image_path+'/train.csv')
 
@@ -220,7 +220,7 @@ def plot_accuray_loss(model_history):
         ax2.grid()
 
         # Save the subplots file.`125   q`
-        fig.savefig(f'./figures/Efficient_accuracy_loss_18.png')
+        fig.savefig(f'./figures/Efficient_accuracy_loss_21.png')
     
     except Exception as e:
         print(f"Plotting accuracy and loss has failed. Error: {e}")
@@ -252,30 +252,3 @@ def visualise_subset(train_dataset, labels):
 
     except Exception as e:
         print(f"Visualising subset failed. Error: {e}")
-
-
-def visualise_augmentation(augmented_data):
-    """Visualise Subset.
-
-    This function visualises a subset of the training dataset images data.
-
-    Args:
-            training datasets.
-
-    Returns:
-            Images saved in figures folder.
-
-    """
-
-    try:
-
-        plt.figure(figsize=(12,10))
-        for x in range(6):
-            plt.subplot(2, 3, x+1)
-            plt.imshow(augmented_data[x].numpy(), cmap=plt.get_cmap('gray'))
-
-        plt.savefig("./figures/augmented_images.jpeg")
-        plt.close()
-
-    except Exception as e:
-        print(f"Visualising augmented subset failed. Error: {e}")
