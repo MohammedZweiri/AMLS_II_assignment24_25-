@@ -171,13 +171,13 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(Flatten())
         model.add(Dense(1024,activation='relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.3))
+        model.add(Dropout(0.25))
         model.add(Dense(512, activation="relu"))
         model.add(BatchNormalization())
-        model.add(Dropout(0.3))
+        model.add(Dropout(0.25))
         model.add(Dense(256,activation='relu'))
         model.add(BatchNormalization())
-        model.add(Dropout(0.3))
+        model.add(Dropout(0.25))
         model.add(Dense(128, activation="relu"))
         model.add(BatchNormalization())
         model.add(Dropout(0.5))
@@ -198,7 +198,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_23.png', 
+                to_file='./figures/EfficientNet_Model_test_24.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -221,7 +221,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_23")
+        utils.save_model(model, "EfficientNet_Model_test_add_24")
 
         utils.plot_accuray_loss(history)
 
