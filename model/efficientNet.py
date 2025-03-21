@@ -198,14 +198,14 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_24.png', 
+                to_file='./figures/EfficientNet_Model_test_25.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
         # Compile the CNN model
         #lr_schedule = ExponentialDecay(5e-3, decay_steps=10000, decay_rate=0.9)
         model.compile(loss='categorical_crossentropy',
-                optimizer=Adam(0.0001),
+                optimizer=Adam(0.00005),
                 metrics=['accuracy'])
         
         # Handle the class imbalance.
@@ -213,7 +213,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Fit the CNN model
         history = model.fit(train_dataset, train_labels_categorical, 
-                epochs=30,
+                epochs=20,
                 callbacks=[tf.keras.callbacks.EarlyStopping(patience=8)],
                 validation_data=(val_dataset, val_labels_categorical),
                 batch_size=32,
@@ -221,7 +221,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_24")
+        utils.save_model(model, "EfficientNet_Model_test_add_25")
 
         utils.plot_accuray_loss(history)
 
