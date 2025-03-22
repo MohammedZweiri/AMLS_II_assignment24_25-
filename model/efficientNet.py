@@ -15,6 +15,7 @@ from keras.layers import GlobalAveragePooling2D, Dropout, Dense, RandomFlip, Ran
 from keras.optimizers import Adam
 from keras.optimizers.schedules import ExponentialDecay
 from keras.applications import EfficientNetB0, EfficientNetB3
+from keras import regularizers
 from keras import Input
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 from sklearn.utils import class_weight
@@ -169,16 +170,16 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(GlobalAveragePooling2D())
         #model.add(Dropout(0.25))
         model.add(Flatten())
-        model.add(Dense(1024,activation='relu'))
+        model.add(Dense(1024,activation='relu'), bias_regularizer=regularizers.L1(1e-4))
         model.add(BatchNormalization())
         model.add(Dropout(0.3))
-        model.add(Dense(512, activation="relu"))
+        model.add(Dense(512, activation="relu"), bias_regularizer=regularizers.L1(1e-4))
         model.add(BatchNormalization())
         model.add(Dropout(0.3))
-        model.add(Dense(256,activation='relu'))
+        model.add(Dense(256,activation='relu'), bias_regularizer=regularizers.L1(1e-4))
         model.add(BatchNormalization())
         model.add(Dropout(0.3))
-        model.add(Dense(128, activation="relu"))
+        model.add(Dense(128, activation="relu"), bias_regularizer=regularizers.L1(1e-4))
         model.add(BatchNormalization())
         model.add(Dropout(0.5))
         #model.add(Dropout(0.5))
@@ -198,14 +199,14 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_26.png', 
+                to_file='./figures/EfficientNet_Model_test_27.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
         # Compile the CNN model
         #lr_schedule = ExponentialDecay(5e-3, decay_steps=10000, decay_rate=0.9)
         model.compile(loss='categorical_crossentropy',
-                optimizer=Adam(0.00005),
+                optimizer=Adam(0.0001),
                 metrics=['accuracy'])
         
         # Handle the class imbalance.
@@ -221,7 +222,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_26")
+        utils.save_model(model, "EfficientNet_Model_test_add_27")
 
         utils.plot_accuray_loss(history)
 
