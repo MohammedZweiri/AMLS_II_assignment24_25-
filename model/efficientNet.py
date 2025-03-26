@@ -230,7 +230,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         print(f"Training and saving the EfficientNet model failed. Error: {e}")
 
 
-def EfficientNet_model_testing(test_dataset):
+def EfficientNet_model_testing(test_dataset, test_lables):
     """CNN model testing
 
     This function loads the final CNN model and tests it on the test dataset. Then, it will evaluate it and produce the accuracy and plot loss.
@@ -251,15 +251,15 @@ def EfficientNet_model_testing(test_dataset):
                 "Healthy"]
 
         # Load the CNN model
-        model = utils.load_model("CNN_model_taskB_final")
+        model = utils.load_model("EfficientNet_Model_test_add_23")
 
         # Output the model summary
         print(model.summary())
 
         # Evaluate the model
-        test_dataset_prob = model.predict(test_dataset.imgs, verbose=0)
+        test_dataset_prob = model.predict(test_dataset, verbose=0)
         test_predict_labels = np.argmax(test_dataset_prob, axis=-1)
-        evaluate_model(test_dataset.labels, test_predict_labels, test_dataset_prob, class_labels)
+        evaluate_model(test_lables, test_predict_labels, test_dataset_prob, class_labels)
 
     except Exception as e:
         print(f"Loading and testing the EfficientNet model failed. Error: {e}")

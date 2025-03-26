@@ -149,7 +149,7 @@ def save_model(model, model_name):
 
 
 
-def load_model(task_name, model_name):
+def load_model(model_name):
     """Save CNN model.
 
     This function loads the saved CNN model and weights to be used later on.
@@ -165,19 +165,19 @@ def load_model(task_name, model_name):
     try:
         
         # Locate the model structure file
-        file_path = Path(f"{task_name}/model/{model_name}.json")
+        file_path = Path(f"./model/{model_name}.json")
 
         # Read the json file and extract the CNN model
         model_structure = file_path.read_text()
         model = model_from_json(model_structure)
 
         # Load the CNN weights
-        model.load_weights(f"{task_name}/model/{model_name}.weights.h5")
+        model.load_weights(f"./model/{model_name}.weights.h5")
 
         return model
     
     except Exception as e:
-        print(f"Loading the CNN model failed. Error: {e}")
+        print(f"Loading the EfficientNet model failed. Error: {e}")
 
 
 

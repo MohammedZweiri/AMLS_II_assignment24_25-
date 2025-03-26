@@ -43,9 +43,10 @@ def task(image_path):
     # # Run the CNN model
 
     # if decision == 'train':
-    print('Performing model training..')
-    efficientNet.EfficientNet_model_training(x_train, y_train, x_val, y_val)
-        
+    print('Performing model testing..')
+    #efficientNet.EfficientNet_model_training(x_train, y_train, x_val, y_val)
+    
+    efficientNet.EfficientNet_model_testing(x_test, y_test)
     # elif decision == 'test':
     #     CNN_B.CNN_model_testing(test_dataset)
 
