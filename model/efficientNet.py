@@ -11,7 +11,7 @@ from tensorflow import keras
 from keras.utils import to_categorical, plot_model
 import tensorflow as tf
 from keras.models import Sequential, Model
-from keras.layers import GlobalAveragePooling2D, Dropout, Dense, RandomFlip, RandomRotation, RandomZoom, Flatten, BatchNormalization
+from keras.layers import GlobalAveragePooling2D, Conv2D, Dropout, Dense, RandomFlip, RandomRotation, RandomZoom, Flatten, BatchNormalization
 from keras.optimizers import Adam
 from keras.optimizers.schedules import ExponentialDecay
 from keras.applications import EfficientNetB0, EfficientNetB3
@@ -170,16 +170,16 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(GlobalAveragePooling2D())
         #model.add(Dropout(0.25))
         model.add(Flatten())
-        model.add(Dense(1024,activation='relu', bias_regularizer=regularizers.L2(1e-4), kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4)))
+        model.add(Conv2D(1024, (3,3), activation='relu'))
         model.add(BatchNormalization())
         model.add(Dropout(0.3))
-        model.add(Dense(512, activation="relu", bias_regularizer=regularizers.L2(1e-4), kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4)))
+        model.add(Conv2D(512,(3,3),  activation="relu"))
         model.add(BatchNormalization())
         model.add(Dropout(0.3))
-        model.add(Dense(256,activation='relu', bias_regularizer=regularizers.L2(1e-4), kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4)))
+        model.add(Conv2D(256, (3,3), activation='relu'))
         model.add(BatchNormalization())
         model.add(Dropout(0.3))
-        model.add(Dense(128, activation="relu", bias_regularizer=regularizers.L2(1e-4), kernel_regularizer=regularizers.L1L2(l1=1e-5, l2=1e-4)))
+        model.add(Dense(128, activation="relu"))
         model.add(BatchNormalization())
         model.add(Dropout(0.5))
         #model.add(Dropout(0.5))
@@ -199,7 +199,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_31.png', 
+                to_file='./figures/EfficientNet_Model_test_32.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -222,7 +222,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the CNN model
-        utils.save_model(model, "EfficientNet_Model_test_add_31")
+        utils.save_model(model, "EfficientNet_Model_test_add_32")
 
         utils.plot_accuray_loss(history)
 
