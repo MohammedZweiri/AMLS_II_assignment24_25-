@@ -69,12 +69,12 @@ def evaluate_model(true_labels, predicted_labels, predict_probs, label_names):
 
     try:
 
-        if(true_labels.ndim==2):
-            true_labels = true_labels[:,0]
-        if(predicted_labels.ndim==2):
-            predicted_labels=predicted_labels[:,0]
-        if(predict_probs.ndim==2):
-            predict_probs=predict_probs[:,0]
+        # if(true_labels.ndim==2):
+        #     true_labels = true_labels[:,0]
+        # if(predicted_labels.ndim==2):
+        #     predicted_labels=predicted_labels[:,0]
+        # if(predict_probs.ndim==2):
+        #     predict_probs=predict_probs[:,0]
 
         # Calculates accuracry, precision, recall and f1 scores.
         print(f"Accuracy: {accuracy_score(true_labels, predicted_labels)}")
