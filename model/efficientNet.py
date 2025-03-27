@@ -91,7 +91,7 @@ def evaluate_model(true_labels, predicted_labels, predict_probs, label_names):
         plt.figure(figsize=(10, 7), dpi=200)
         ConfusionMatrixDisplay(matrix, display_labels=label_names).plot(cmap=plt.cm.Blues, xticks_rotation='vertical')
         plt.title("Confusion Matrix for EfficientNet")
-        plt.savefig('/figures/Confusion_Matrix_EfficientNet.png', bbox_inches = 'tight')
+        plt.savefig('./figures/Confusion_Matrix_EfficientNet.png', bbox_inches = 'tight')
 
     except Exception as e:
         print(f"Evaluating the EfficientNet model has failed. Error: {e}")
