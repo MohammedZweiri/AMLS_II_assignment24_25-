@@ -79,6 +79,7 @@ def load_dataset(image_path):
         x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp,
                                                             test_size=0.5,
                                                             random_state=42)
+    
         
         print("Dataset split checkpoint")
 
@@ -220,7 +221,7 @@ def plot_accuray_loss(model_history):
         ax2.grid()
 
         # Save the subplots file.`125   q`
-        fig.savefig(f'./figures/Efficient_accuracy_loss_33.png')
+        fig.savefig(f'./figures/Efficient_accuracy_loss_34.png')
     
     except Exception as e:
         print(f"Plotting accuracy and loss has failed. Error: {e}")
