@@ -166,7 +166,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         model = Sequential()
         model.add(EfficientNetB0(weights="imagenet", include_top=False, input_shape=(224,224,3)))
-        #model.add(image_augmentation())
+        model.add(image_augmentation())
         model.add(GlobalAveragePooling2D())
         #model.add(Dropout(0.25))
         model.add(Flatten())
