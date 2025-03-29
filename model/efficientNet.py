@@ -140,7 +140,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(RandomRotation(0.2))
         model.add(RandomZoom(0.2))
         model.add(Lambda(lambda x: preprocess_input(x)))
-        model.add(EfficientNetB0(weights="imagenet", include_top=False, pooling='avg'))
+        model.add(EfficientNetB0(weights="imagenet", include_top=False))
         model.add(GlobalAveragePooling2D())
         #model.add(Dropout(0.25))
         model.add(Flatten())
