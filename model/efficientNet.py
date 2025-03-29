@@ -11,47 +11,17 @@ from tensorflow import keras
 from keras.utils import to_categorical, plot_model
 import tensorflow as tf
 from keras.models import Sequential, Model
-from keras.layers import GlobalAveragePooling2D, Conv2D, Dropout, Dense, RandomFlip, RandomRotation, RandomZoom, Flatten, BatchNormalization
+from keras.layers import GlobalAveragePooling2D, Conv2D, Dropout, Dense, Lambda, RandomFlip, RandomRotation, RandomZoom, Flatten, BatchNormalization, Input
 from keras.optimizers import Adam
 from keras.optimizers.schedules import ExponentialDecay
 from keras.applications import EfficientNetB0, EfficientNetB3
+from keras.applications.efficientnet import preprocess_input
 from keras import regularizers
 from keras import Input
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 from sklearn.utils import class_weight
 from src import utils
 import os
-
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-
-def image_augmentation():
-    """Pre-process check.
-
-    This function checks if the datasets has no missing images.
-
-    Args:
-            training, validation and test datasets.
-
-    Returns:
-            N/A
-
-    """
-
-    # Convert numpy array to a Tensor
-#     x_train_tensor = tf.convert_to_tensor(train_dataset)
-
-    # Apply augmentation
-    data_augmentation = Sequential([
-
-        RandomFlip("horizontal"),
-        RandomRotation(0.2),
-        RandomZoom(0.2),
-
-    ])
-
-#     augmented_train_dataset = data_augmentation(x_train_tensor, training=True)
-    return data_augmentation
-
 
 
 def evaluate_model(true_labels, predicted_labels, predict_probs, label_names):
@@ -165,8 +135,12 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         # model = Model(inputs=base_model.input, outputs=output_layer)
 
         model = Sequential()
-        model.add(EfficientNetB0(weights="imagenet", include_top=False, input_shape=(224,224,3)))
-        model.add(image_augmentation())
+        model.add(Input(shape=(224,224,3)))
+        model.add(RandomFlip(0.2))
+        model.add(RandomRotation(0.2))
+        model.add(RandomZoom(0.2))
+        model.add(Lambda(lambda x: preprocess_input(x)))
+        model.add(EfficientNetB0(weights="imagenet", include_top=False, pooling='avg'))
         model.add(GlobalAveragePooling2D())
         #model.add(Dropout(0.25))
         model.add(Flatten())
@@ -199,7 +173,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the CNN model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_33.png', 
+                to_file='./figures/EfficientNet_Model_test_34.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
