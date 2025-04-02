@@ -146,10 +146,10 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(Flatten())
         model.add(Dense(1024, activation='relu'))
         #model.add(BatchNormalization())
-        model.add(Dropout(0.3))
+        #model.add(Dropout(0.3))
         model.add(Dense(512, activation="relu"))
         #model.add(BatchNormalization())
-        model.add(Dropout(0.3))
+        #model.add(Dropout(0.3))
         model.add(Dense(256, activation='relu'))
         #model.add(BatchNormalization())
         # model.add(Dropout(0.3))
@@ -179,7 +179,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Compile the CNN model
         #lr_schedule = ExponentialDecay(5e-3, decay_steps=10000, decay_rate=0.9)
-        model.compile(loss='sparse_categorical_crossentropy',
+        model.compile(loss='categorical_crossentropy',
                 optimizer=Adam(0.00001),
                 metrics=['accuracy'])
         
