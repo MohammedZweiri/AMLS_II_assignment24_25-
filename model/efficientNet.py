@@ -15,6 +15,7 @@ from keras.layers import GlobalAveragePooling2D, Dropout, Dense, Lambda, RandomF
 from keras.optimizers import Adam
 from keras.applications import EfficientNetB0
 from keras.applications.efficientnet import preprocess_input
+from keras.config import enable_unsafe_deserialization
 from keras import Input
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 from sklearn.utils import class_weight
@@ -202,6 +203,7 @@ def EfficientNet_model_testing(test_dataset, test_lables):
                 "Healthy"]
 
         # Load the CNN model
+        enable_unsafe_deserialization()
         model = utils.load_model("EfficientNet_Model_test_add_40")
 
         # Output the model summary
