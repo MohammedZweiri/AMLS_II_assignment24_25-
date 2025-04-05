@@ -11,9 +11,8 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import os
 import cv2
-from model import efficientNet 
+import seaborn as sns
 
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 def create_directory(directory):
     """Create directory under the current path
@@ -44,10 +43,10 @@ def create_directory(directory):
 def load_dataset(image_path):
     """Download dataset.
 
-    This function downloads the BloodMNIST dataset from the medmnist library
+    This function downloads the Cassava leaf disease dataset
 
     Args:
-            dataset_name(str): The dataset name to be downloaded
+            image_path(str): image paths
 
     Returns:
             Training, validation and test datasets.
@@ -57,11 +56,15 @@ def load_dataset(image_path):
 
         TARGET_SIZE = 224
 
+        # Read the training dataset and extract the image names and labels
         train = pd.read_csv(image_path+'/train.csv')
-
         image_name = train['image_id'].to_list()
         labels = train['label'].to_list()
 
+        # Visualise the classes count
+        visualise_classes(train['label'])
+
+        # Resize the images into a 224x224 shape. Then convert it into a numpy array
         img = []
         for i in range(len(image_name)):
         
@@ -70,18 +73,14 @@ def load_dataset(image_path):
         
         train_img = np.array(img)
 
-        print("Computer vision read checkpoint")
 
-        print(len(train_img))
+        # Split the dataset into train, validation and test sets
         x_train, x_temp, y_train, y_temp = train_test_split(train_img, labels,
                                                             test_size=0.3, random_state=42)
         
         x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp,
                                                             test_size=0.5,
                                                             random_state=42)
-    
-        
-        print("Dataset split checkpoint")
 
         print(f"Training shape: {str(x_train.shape)}")
         print(f"Validation shape: {str(x_val.shape)}")
@@ -94,40 +93,14 @@ def load_dataset(image_path):
 
 
 
-def normalize_dataset(train_dataset, validation_dataset, test_dataset):
-    """Normalize dataset.
-
-    This function performs data transform via normalization.
-
-    Args:
-            training, validation and test datasets.
-
-    Returns:
-            normalized training, validation and test datasets.
-
-    """
-
-    try:
-        
-        # Performing data transformation via normalization
-        train_dataset = train_dataset/255.0
-        validation_dataset = validation_dataset/255.0
-        test_dataset= test_dataset/255.0
-
-        return train_dataset, validation_dataset, test_dataset
-    
-    except Exception as e:
-        print(f"Data normalization failed. Error: {e}")
-
-
 
 def save_model(model, model_name):
-    """Save CNN model.
+    """Save model.
 
-    This function saves CNN model and weights as json and .h5 files respectively.
+    This function saves model and weights as json and .h5 files respectively.
 
     Args:
-            CNN model
+            model
             model_name(str)
             
 
@@ -151,15 +124,15 @@ def save_model(model, model_name):
 
 
 def load_model(model_name):
-    """Save CNN model.
+    """load model.
 
-    This function loads the saved CNN model and weights to be used later on.
+    This function loads the saved model and weights to be used later on.
 
     Args:
             model_name(str)
             
     Returns:
-            CNN model
+            model
 
     """
 
@@ -183,9 +156,9 @@ def load_model(model_name):
 
 
 def plot_accuray_loss(model_history):
-    """Plot accuracy loss graphs for the CNN model.
+    """Plot accuracy loss graphs for the model.
 
-    This function plots the CNN model's accuracy and loss against epoch into a fig file.
+    This function plots the model's accuracy and loss against epoch into a fig file.
 
     Args:
             model history
@@ -253,3 +226,32 @@ def visualise_subset(train_dataset, labels):
 
     except Exception as e:
         print(f"Visualising subset failed. Error: {e}")
+
+
+
+def visualise_classes(df):
+    """Visualise Labels.
+
+    This function visualises a subset of the training dataset labels data.
+
+    Args:
+            labels.
+
+    Returns:
+            Images saved in figures folder.
+
+    """
+
+    try:
+
+        plt.figure(figsize=(10, 8))
+        ax=sns.countplot(x=df,palette="viridis",order=df.value_counts().index)
+        for p in ax.containers:
+            ax.bar_label(p, fontsize=20, color='black', padding=5)
+
+        plt.title('Classes count')
+        plt.savefig("./figures/classes.jpeg")
+        plt.close()
+
+    except Exception as e:
+        print(f"Visualising classes failed. Error: {e}")
