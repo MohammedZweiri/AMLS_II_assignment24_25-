@@ -151,7 +151,7 @@ def load_model(model_name):
         model = model_from_json(model_structure)
 
         # Load the CNN weights
-        model.load_model(f"./model/{model_name}.weights.h5", custom_objects={"preprocess_input": preprocess_input})
+        model = load_model(f"./model/{model_name}.weights.h5", custom_objects={"preprocess_input": preprocess_input})
 
         return model
     
