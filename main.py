@@ -7,6 +7,9 @@ from src import utils
 from model import efficientNet
 import argparse
 import os
+import warnings
+
+warnings.filterwarnings("ignore")
 
 
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'

@@ -19,6 +19,9 @@ from keras import Input
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 from sklearn.utils import class_weight
 from src import utils
+import warnings
+
+warnings.filterwarnings("ignore")
 
 
 def evaluate_model(true_labels, predicted_labels, predict_probs, label_names):

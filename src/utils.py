@@ -12,6 +12,9 @@ from sklearn.model_selection import train_test_split
 import os
 import cv2
 import seaborn as sns
+import warnings
+
+warnings.filterwarnings("ignore")
 
 
 def create_directory(directory):
