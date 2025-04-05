@@ -13,6 +13,7 @@ import os
 import cv2
 import seaborn as sns
 import warnings
+from keras.applications.efficientnet import preprocess_input
 
 warnings.filterwarnings("ignore")
 
@@ -146,7 +147,7 @@ def load_model(model_name):
 
         # Read the json file and extract the CNN model
         model_structure = file_path.read_text()
-        model = model_from_json(model_structure)
+        model = model_from_json(model_structure, custom_objects={"preprocess_input": preprocess_input})
 
         # Load the CNN weights
         model.load_weights(f"./model/{model_name}.weights.h5")
