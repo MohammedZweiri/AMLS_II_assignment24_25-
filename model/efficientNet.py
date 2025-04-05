@@ -199,7 +199,7 @@ def EfficientNet_model_testing(test_dataset, test_lables):
                 "Healthy"]
 
         # Load the CNN model
-        model = utils.load_model("EfficientNet_Model_test_add_23")
+        model = utils.load_model("EfficientNet_Model_test_add_45")
 
         # Output the model summary
         print(model.summary())
