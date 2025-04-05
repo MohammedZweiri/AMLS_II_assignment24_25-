@@ -1,7 +1,7 @@
-"""Accomplishing Task B via Convolutional Neural Networks.
+"""Accomplishing cassava leaf disease classification via EfficientNet transfer learner.
 
-    This module acquires BlooddMNIST data from medmnist library, then it uses the CNN model to accuractly predict the 8 different
-    classes of the blood diseases.
+    This module uses EfficientNet model to accuractly predict the 5 different
+    classes of the cassava leaf diseases.
 
     """
 
@@ -10,18 +10,15 @@ import numpy as np
 from tensorflow import keras
 from keras.utils import to_categorical, plot_model
 import tensorflow as tf
-from keras.models import Sequential, Model
-from keras.layers import GlobalAveragePooling2D, Conv2D, Dropout, Dense, Lambda, RandomFlip, RandomRotation, RandomZoom, Flatten, BatchNormalization, Input
+from keras.models import Sequential
+from keras.layers import GlobalAveragePooling2D, Dropout, Dense, Lambda, RandomFlip, RandomRotation, RandomZoom, Flatten, BatchNormalization, Input
 from keras.optimizers import Adam
-from keras.optimizers.schedules import ExponentialDecay
-from keras.applications import EfficientNetB0, EfficientNetB3
+from keras.applications import EfficientNetB0
 from keras.applications.efficientnet import preprocess_input
-from keras import regularizers
 from keras import Input
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 from sklearn.utils import class_weight
 from src import utils
-import os
 
 
 def evaluate_model(true_labels, predicted_labels, predict_probs, label_names):
@@ -38,13 +35,6 @@ def evaluate_model(true_labels, predicted_labels, predict_probs, label_names):
     """
 
     try:
-
-        # if(true_labels.ndim==2):
-        #     true_labels = true_labels[:,0]
-        # if(predicted_labels.ndim==2):
-        #     predicted_labels=predicted_labels[:,0]
-        # if(predict_probs.ndim==2):
-        #     predict_probs=predict_probs[:,0]
 
         # Calculates accuracry, precision, recall and f1 scores.
         print(f"Accuracy: {accuracy_score(true_labels, predicted_labels)}")
@@ -103,13 +93,14 @@ def class_imbalance_handling(train_labels):
     except Exception as e:
         print(f"Class imbalance handling has failed. Error: {e}")
 
-def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_labels):
-    """CNN model training
 
-    This function trains the CNN model and tests it on the dataset. Then, it will evaluate it and produce the accuracy and plot loss.
+def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_labels):
+    """EfficientNet model training
+
+    This function trains the EfficientNet model and tests it on the dataset. Then, it will evaluate it and produce the accuracy and plot loss.
 
     Args:
-            training and validation datasets.
+            training and validation datasets and labels
     
 
     """
@@ -123,17 +114,6 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # CNN model
 
-        #base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(128,128,3))
-        #model = base_model.output
-        # model = image_augmentation()(model)
-        # model = GlobalAveragePooling2D()(model)
-        # model = Dropout(0.25)(model)
-        # model = Dense(128, activation="relu")(model)
-        # model = Dropout(0.5)(model)
-        # output_layer = Dense(5, activation="softmax")(model)
-
-        # model = Model(inputs=base_model.input, outputs=output_layer)
-
         model = Sequential()
         model.add(Input(shape=(224,224,3)))
         model.add(RandomFlip(0.2))
@@ -143,26 +123,19 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(EfficientNetB0(weights="imagenet", include_top=False))
         model.add(GlobalAveragePooling2D())
         model.add(BatchNormalization())
-        #model.add(Dropout(0.25))
         model.add(Flatten())
         model.add(Dense(1024, activation='relu'))
-        #model.add(BatchNormalization())
         model.add(Dropout(0.3))
         model.add(Dense(512, activation="relu"))
-        #model.add(BatchNormalization())
         model.add(Dropout(0.3))
         model.add(Dense(256, activation='relu'))
-        #model.add(BatchNormalization())
-        # model.add(Dropout(0.3))
-        # model.add(Dense(128, activation="relu"))
-        #model.add(BatchNormalization())
         model.add(Dropout(0.5))
-        #model.add(Dropout(0.5))
         model.add(Dense(5, activation="softmax"))
+
         # Output the model summary
         print(model.summary())
 
-
+        # Check if there is any GPU available
         gpus = tf.config.list_physical_devices('GPU')
 
         if gpus:
@@ -172,14 +145,13 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         print(tf.config.experimental.list_physical_devices('GPU'))
 
-        # Plot the CNN model
+        # Plot the EfficientNet model
         plot_model(model, 
                 to_file='./figures/EfficientNet_Model_test_45.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
-        # Compile the CNN model
-        #lr_schedule = ExponentialDecay(5e-3, decay_steps=10000, decay_rate=0.9)
+        # Compile the EfficientNet model
         model.compile(loss='categorical_crossentropy',
                 optimizer=Adam(0.00001),
                 metrics=['accuracy'])
@@ -187,7 +159,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         # Handle the class imbalance.
         weights = class_imbalance_handling(train_labels)
 
-        # Fit the CNN model
+        # Fit the EfficientNet model
         history = model.fit(train_dataset, train_labels_categorical, 
                 epochs=75,
                 callbacks=[tf.keras.callbacks.EarlyStopping(patience=8)],
@@ -196,9 +168,10 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 shuffle=True,
                 class_weight=weights)
         
-        # save the CNN model
+        # save the EfficientNet model
         utils.save_model(model, "EfficientNet_Model_test_add_45")
 
+        # plot the accuracy and loss graphs for the EfficientNet model
         utils.plot_accuray_loss(history)
 
     except Exception as e:
@@ -206,12 +179,12 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
 
 def EfficientNet_model_testing(test_dataset, test_lables):
-    """CNN model testing
+    """EfficientNet model testing
 
-    This function loads the final CNN model and tests it on the test dataset. Then, it will evaluate it and produce the accuracy and plot loss.
+    This function loads the final EfficientNet model and tests it on the test dataset. Then, it will evaluate it and produce the accuracy and plot loss.
 
     Args:
-            training, validation and test datasets.
+             test datasets.
     
 
     """
