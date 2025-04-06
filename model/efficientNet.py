@@ -125,7 +125,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         
         model = Sequential()
-        #model.add(Input(shape=(224,224,3)))
+        model.add(Input(shape=(224,224,3)))
         model.add(RandomFlip(0.2))
         model.add(RandomRotation(0.2))
         model.add(RandomZoom(0.2))
@@ -138,6 +138,8 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(Dense(512, activation="relu"))
         model.add(Dropout(0.3))
         model.add(Dense(256, activation='relu'))
+	model.add(Dropout(0.3))
+	model.add(Dense(128, activation='relu'))
         model.add(Dropout(0.5))
         model.add(Dense(5, activation="softmax"))
 
@@ -156,7 +158,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the EfficientNet model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_46.png', 
+                to_file='./figures/EfficientNet_Model_test_47.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -178,7 +180,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the EfficientNet model
-        utils.save_model(model, "EfficientNet_Model_test_add_46")
+        utils.save_model(model, "EfficientNet_Model_test_add_47")
 
         # plot the accuracy and loss graphs for the EfficientNet model
         utils.plot_accuray_loss(history)
