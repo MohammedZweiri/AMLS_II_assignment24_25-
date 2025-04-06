@@ -123,7 +123,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(RandomFlip(0.2))
         model.add(RandomRotation(0.2))
         model.add(RandomZoom(0.2))
-        model.add(Lambda(lambda x: preprocess_input(x)))
+        #model.add(Lambda(lambda x: preprocess_input(x)))
         model.add(EfficientNetB0(weights="imagenet", include_top=False))
         model.add(GlobalAveragePooling2D())
         model.add(BatchNormalization())
@@ -151,7 +151,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the EfficientNet model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_45.png', 
+                to_file='./figures/EfficientNet_Model_test_46.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -168,12 +168,12 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 epochs=75,
                 callbacks=[tf.keras.callbacks.EarlyStopping(patience=8)],
                 validation_data=(val_dataset, val_labels_categorical),
-                batch_size=32,
+                batch_size=64,
                 shuffle=True,
                 class_weight=weights)
         
         # save the EfficientNet model
-        utils.save_model(model, "EfficientNet_Model_test_add_45")
+        utils.save_model(model, "EfficientNet_Model_test_add_46")
 
         # plot the accuracy and loss graphs for the EfficientNet model
         utils.plot_accuray_loss(history)

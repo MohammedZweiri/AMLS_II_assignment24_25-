@@ -151,7 +151,7 @@ def load_model(model_name):
         model = model_from_json(model_structure)
 
         # Load the CNN weights
-        model = load_model(f"./model/{model_name}.weights.h5", custom_objects={"preprocess_input": preprocess_input})
+        model.load_model(f"./model/{model_name}.weights.h5")
 
         return model
     
@@ -199,7 +199,7 @@ def plot_accuray_loss(model_history):
         ax2.grid()
 
         # Save the subplots file.`125   q`
-        fig.savefig(f'./figures/Efficient_accuracy_loss_45.png')
+        fig.savefig(f'./figures/Efficient_accuracy_loss_46.png')
     
     except Exception as e:
         print(f"Plotting accuracy and loss has failed. Error: {e}")
