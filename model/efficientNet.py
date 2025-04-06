@@ -138,8 +138,8 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         model.add(Dense(512, activation="relu"))
         model.add(Dropout(0.3))
         model.add(Dense(256, activation='relu'))
-	model.add(Dropout(0.3))
-	model.add(Dense(128, activation='relu'))
+        model.add(Dropout(0.3))
+        model.add(Dense(128, activation='relu'))
         model.add(Dropout(0.5))
         model.add(Dense(5, activation="softmax"))
 
