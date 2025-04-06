@@ -118,13 +118,18 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # CNN model
 
+        base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
+
+        # ❄️ Freeze the base model (for transfer learning)
+        base_model.trainable = False
+
+        
         model = Sequential()
-        model.add(Input(shape=(224,224,3)))
+        #model.add(Input(shape=(224,224,3)))
         model.add(RandomFlip(0.2))
         model.add(RandomRotation(0.2))
         model.add(RandomZoom(0.2))
-        #model.add(Lambda(lambda x: preprocess_input(x)))
-        model.add(EfficientNetB0(weights="imagenet", include_top=False))
+        model.add(base_model)
         model.add(GlobalAveragePooling2D())
         model.add(BatchNormalization())
         model.add(Flatten())
