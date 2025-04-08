@@ -33,10 +33,11 @@ def task(image_path, decision):
 
     # Run the efficientNet model
     if decision == 'train':
-        print('Performing model testing..')
+        print('Performing model training, then testing..')
         efficientNet.EfficientNet_model_training(x_train, y_train, x_val, y_val)
-        #efficientNet.EfficientNet_model_testing(x_test, y_test)
+        efficientNet.EfficientNet_model_testing(x_test, y_test)
     elif decision == 'test':
+        print('Performing model testing..')
         efficientNet.EfficientNet_model_testing(x_test, y_test)
 
     print("\n################ Cassava leaf disease classification task via efficientNet has finished ################")
