@@ -11,11 +11,9 @@ from tensorflow import keras
 from keras.utils import to_categorical, plot_model
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import GlobalAveragePooling2D, Dropout, Dense, Lambda, RandomFlip, RandomRotation, RandomZoom, Flatten, BatchNormalization, Input
+from keras.layers import GlobalAveragePooling2D, Dropout, Dense, Flatten, BatchNormalization, Input
 from keras.optimizers import Adam
 from keras.applications import EfficientNetB0
-from keras.applications.efficientnet import preprocess_input
-from keras.config import enable_unsafe_deserialization
 from keras import Input
 from sklearn.metrics import confusion_matrix, classification_report,accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 from sklearn.utils import class_weight
@@ -116,19 +114,15 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
         train_labels_categorical = to_categorical(train_labels, num_classes=5)
         val_labels_categorical = to_categorical(val_labels, num_classes=5)
 
-        # CNN model
-
+        # EfficientNet model
         base_model = EfficientNetB0(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
 
-        # ❄️ Freeze the base model (for transfer learning)
+        # Freeze the base model (for transfer learning)
         base_model.trainable = False
 
         
         model = Sequential()
         model.add(Input(shape=(224,224,3)))
-        model.add(RandomFlip(0.2))
-        model.add(RandomRotation(0.2))
-        model.add(RandomZoom(0.2))
         model.add(base_model)
         model.add(GlobalAveragePooling2D())
         model.add(BatchNormalization())
@@ -172,15 +166,15 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Fit the EfficientNet model
         history = model.fit(train_dataset, train_labels_categorical, 
-                epochs=75,
+                epochs=100,
                 callbacks=[tf.keras.callbacks.EarlyStopping(patience=8)],
                 validation_data=(val_dataset, val_labels_categorical),
-                batch_size=64,
+                batch_size=32,
                 shuffle=True,
                 class_weight=weights)
         
         # save the EfficientNet model
-        utils.save_model(model, "EfficientNet_Model_test_add_47")
+        utils.save_model(model, "EfficientNet_Model_test_add_54")
 
         # plot the accuracy and loss graphs for the EfficientNet model
         utils.plot_accuray_loss(history)
@@ -210,8 +204,7 @@ def EfficientNet_model_testing(test_dataset, test_lables):
                 "Healthy"]
 
         # Load the CNN model
-        enable_unsafe_deserialization()
-        model = utils.load_model("EfficientNet_Model_test_add_40")
+        model = utils.load_model("EfficientNet_Model_test_add_52")
 
         # Output the model summary
         print(model.summary())

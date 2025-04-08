@@ -13,8 +13,6 @@ import os
 import cv2
 import seaborn as sns
 import warnings
-from keras.applications.efficientnet import preprocess_input
-from keras.models import load_model
 
 warnings.filterwarnings("ignore")
 
@@ -151,7 +149,7 @@ def load_model(model_name):
         model = model_from_json(model_structure)
 
         # Load the CNN weights
-        model.load_model(f"./model/{model_name}.weights.h5")
+        model.load_weights(f"./model/{model_name}.weights.h5")
 
         return model
     
@@ -198,8 +196,8 @@ def plot_accuray_loss(model_history):
         ax2.legend()
         ax2.grid()
 
-        # Save the subplots file.`125   q`
-        fig.savefig(f'./figures/Efficient_accuracy_loss_46.png')
+        # Save the subplots file.
+        fig.savefig(f'./figures/Efficient_accuracy_loss_final.png')
     
     except Exception as e:
         print(f"Plotting accuracy and loss has failed. Error: {e}")
