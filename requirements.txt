@@ -9,5 +9,5 @@ matplotlib
 pydot
 opencv-python
 seaborn
-warning
 pathlib
+gdown
