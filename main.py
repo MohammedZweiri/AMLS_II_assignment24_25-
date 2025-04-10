@@ -20,11 +20,14 @@ def task(image_path, decision):
 
     """
 
-    print("################ Cassava leaf disease classification task is starting ################\n")
+    print("################ ⏳ Cassava leaf disease classification task is starting ⏳ ################\n")
 
+    # Download the dataset from google drive
+    print("⏳ Dataset download starting...")
+    utils.download_dataset(image_path)
 
-    # Download the dataset
-    print('Loading the dataset..')
+    # load the dataset
+    print('⏳ Loading the dataset..')
     x_train, y_train, x_val, y_val, x_test, y_test = utils.load_dataset(image_path)
 
     # visualise a subset of the dataset
@@ -33,14 +36,14 @@ def task(image_path, decision):
 
     # Run the efficientNet model
     if decision == 'train':
-        print('Performing model training, then testing..')
+        print('⏳ Performing model training, then testing..')
         efficientNet.EfficientNet_model_training(x_train, y_train, x_val, y_val)
         efficientNet.EfficientNet_model_testing(x_test, y_test)
     elif decision == 'test':
-        print('Performing model testing..')
+        print('⏳ Performing model testing..')
         efficientNet.EfficientNet_model_testing(x_test, y_test)
 
-    print("\n################ Cassava leaf disease classification task via efficientNet has finished ################")
+    print("\n################ ✅ Cassava leaf disease classification task via efficientNet has finished ✅ ################")
 
 
 if __name__ == "__main__":

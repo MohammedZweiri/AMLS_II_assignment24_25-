@@ -13,6 +13,8 @@ import os
 import cv2
 import seaborn as sns
 import warnings
+import gdown
+import zipfile
 
 warnings.filterwarnings("ignore")
 
@@ -39,14 +41,49 @@ def create_directory(directory):
             os.mkdir(path)
 
     except Exception as e:
-        print(f"Creating directory failed. Error: {e}")
+        print(f"❌ Creating directory failed. Error: {e}")
 
+
+def download_dataset(image_path):
+    """download dataset.
+
+    This function downloads the Cassava leaf disease dataset zip file from the google drive
+
+    Args:
+            image_path(str): image paths
+
+    Returns:
+            extracted train data folder
+
+    """
+
+    try:
+
+        file_id = "1J1FIQq4eh4uwcGtzt3gDa-uO828NqKlT"
+        url = f"https://drive.google.com/uc?id={file_id}"
+
+        # Download the data from google drive
+        output_path = "train.zip"
+        gdown.download(url, output_path, quiet=False)
+
+        # Move the zip file into Dataset folder
+        unzip_folder = image_path+"/cassava_dataset"
+        os.makedirs(unzip_folder, exist_ok=True)
+
+        # Extract the zip into a name of 'cassva_dataset' folder
+        with zipfile.ZipFile(output_path, 'r') as zip_ref:
+            zip_ref.extractall(unzip_folder)
+
+        print("✅ Dataset downloaded and extracted.")
+
+    except Exception as e:
+        print(f"❌ Downloading dataset failed. Error: {e}")
 
 
 def load_dataset(image_path):
-    """Download dataset.
+    """load dataset.
 
-    This function downloads the Cassava leaf disease dataset
+    This function loads the Cassava leaf disease dataset from the Dataset folder
 
     Args:
             image_path(str): image paths
@@ -58,6 +95,7 @@ def load_dataset(image_path):
     try:
 
         TARGET_SIZE = 224
+        image_path = image_path+"/cassava_dataset"
 
         # Read the training dataset and extract the image names and labels
         train = pd.read_csv(image_path+'/train.csv')
@@ -92,7 +130,7 @@ def load_dataset(image_path):
         return x_train, y_train, x_val, y_val, x_test, y_test
 
     except Exception as e:
-        print(f"Downloading dataset failed. Error: {e}")
+        print(f"❌ Loading dataset failed. Error: {e}")
 
 
 
@@ -122,7 +160,7 @@ def save_model(model, model_name):
         model.save_weights(f"./model/{model_name}.weights.h5")
 
     except Exception as e:
-        print(f"Saving the EfficientNet model failed. Error: {e}")
+        print(f"❌ Saving the EfficientNet model failed. Error: {e}")
 
 
 
@@ -154,7 +192,7 @@ def load_model(model_name):
         return model
     
     except Exception as e:
-        print(f"Loading the EfficientNet model failed. Error: {e}")
+        print(f"❌ Loading the EfficientNet model failed. Error: {e}")
 
 
 
@@ -200,7 +238,7 @@ def plot_accuray_loss(model_history):
         fig.savefig(f'./figures/Efficient_accuracy_loss_final.png')
     
     except Exception as e:
-        print(f"Plotting accuracy and loss has failed. Error: {e}")
+        print(f"❌ Plotting accuracy and loss has failed. Error: {e}")
 
 
 def visualise_subset(train_dataset, labels):
@@ -228,7 +266,7 @@ def visualise_subset(train_dataset, labels):
         plt.close()
 
     except Exception as e:
-        print(f"Visualising subset failed. Error: {e}")
+        print(f"❌ Visualising subset failed. Error: {e}")
 
 
 
@@ -262,4 +300,4 @@ def visualise_classes(df):
         plt.close()
 
     except Exception as e:
-        print(f"Visualising classes failed. Error: {e}")
+        print(f"❌ Visualising classes failed. Error: {e}")
