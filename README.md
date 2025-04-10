@@ -19,7 +19,8 @@ https://www.kaggle.com/competitions/cassava-leaf-disease-classification/overview
 ## Important note before the procedure.
 1. `main.py` has one arguments set.
    - `decision`, which the user can define how to run the models. You can either run on the training, validation and test dataset (training the model from scratch) using `-d train` or test the loaded model using test dataset by adding no input. The default is set to `test`.
-2. `Datasets` folder is empty. However, the images and labels are imported via google drive within the `utils.py` file (no manual inetrvention needed). 
+2. `Dataset` folder does not exist, but it will be created via `utils.py`. 
+3.  The images and labels are imported via google drive within the `utils.py` file (no manual inetrvention needed). 
    - The data in the google drive is a zip file of images folder and their labels' csv file.
 
   

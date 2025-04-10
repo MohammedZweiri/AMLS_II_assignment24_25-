@@ -56,8 +56,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     decision = args.decision
 
-    # Create figures folder
+    # Create figures and dataset folder
     utils.create_directory("figures")
+    utils.create_directory("Dataset")
 
     # Run the required functions depending on user's input
     dataset_path = "./Dataset/"
