@@ -2,12 +2,13 @@
 
 There is one task for this assignment:
 1. Cassava leaf disease multi-class classification.
+https://www.kaggle.com/competitions/cassava-leaf-disease-classification/overview
 
 ## What are the folders and files
 1. Main folder contains main.py file, which runs other instances of python scripts.
 2. `model` folder which contains EfficientNet model files needed when running the scripts.
 4. `src` folder contain `utils.py` script. This file is called by all ML model scripts in this assignment to perform a centralized tasks, such as: 
-   - Downloading Cassava leaf disease dataset.
+   - Downloading and loading Cassava leaf disease dataset.
    - Split dataset into train, validation and test.
    - Output a subset of a dataset.
    - Plot accuracy and loss graphs.
@@ -18,7 +19,8 @@ There is one task for this assignment:
 ## Important note before the procedure.
 1. `main.py` has one arguments set.
    - `decision`, which the user can define how to run the models. You can either run on the training, validation and test dataset (training the model from scratch) using `-d train` or test the loaded model using test dataset by adding no input. The default is set to `test`.
-2. `Datasets` folder does not exist in the repository. However, running the `main.py` script runs through creating that folder and then adding data into it shortly.
+2. `Datasets` folder is empty. However, the images and labels are imported via google drive within the `utils.py` file (no manual inetrvention needed). 
+   - The data in the google drive is a zip file of images folder and their labels' csv file.
 
   
 ## Procedures
