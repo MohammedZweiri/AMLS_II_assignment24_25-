@@ -249,10 +249,15 @@ def visualise_classes(df):
 
         plt.figure(figsize=(10, 8))
         ax=sns.countplot(x=df,palette="viridis",order=df.value_counts().index)
+        # Increase font size of tick labels
+        ax.tick_params(axis='x', labelsize=16)
+        ax.tick_params(axis='y', labelsize=16)
         for p in ax.containers:
             ax.bar_label(p, fontsize=20, color='black', padding=5)
 
-        plt.title('Classes count')
+        ax.set_xlabel("Class", fontsize=20)
+        ax.set_ylabel("Count", fontsize=20)
+        plt.title('Classes count', fontsize=20)
         plt.savefig("./figures/classes.jpeg")
         plt.close()
 

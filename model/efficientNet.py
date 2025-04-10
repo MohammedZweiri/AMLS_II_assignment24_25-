@@ -52,7 +52,7 @@ def evaluate_model(true_labels, predicted_labels, predict_probs, label_names):
         matrix = confusion_matrix(true_labels, predicted_labels)
         plt.figure(figsize=(10, 7), dpi=200)
         ConfusionMatrixDisplay(matrix, display_labels=label_names).plot(cmap=plt.cm.Blues, xticks_rotation='vertical')
-        plt.title("Confusion Matrix for EfficientNet")
+        plt.title("Confusion Matrix for EfficientNet",  fontsize=20)
         plt.savefig('./figures/Confusion_Matrix_EfficientNet.png', bbox_inches = 'tight')
 
     except Exception as e:
@@ -152,7 +152,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
 
         # Plot the EfficientNet model
         plot_model(model, 
-                to_file='./figures/EfficientNet_Model_test_47.png', 
+                to_file='./figures/EfficientNet_Model_test_final.png', 
                 show_shapes=True,
                 show_layer_activations=True)
 
@@ -174,7 +174,7 @@ def EfficientNet_model_training(train_dataset, train_labels, val_dataset, val_la
                 class_weight=weights)
         
         # save the EfficientNet model
-        utils.save_model(model, "EfficientNet_Model_test_add_54")
+        utils.save_model(model, "EfficientNet_Model_test_add_final")
 
         # plot the accuracy and loss graphs for the EfficientNet model
         utils.plot_accuray_loss(history)
