@@ -1,4 +1,4 @@
-""" main.py is a centralised module where the process for both tasks initiates
+""" main.py is a centralised module where the process for cassava disease classification challenge initiates
 
 
 """
